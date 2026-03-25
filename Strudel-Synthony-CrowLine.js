@@ -1,0 +1,8 @@
+$arp: n("[0 0 ~ ~] 3 5 7 8 7 5 3").scale("c1:minor").lpf(2000).crush(5).distort(0.7).release(.5).sustain(0.6).gain(slider(0.29,0,1,0.01))
+$kick: s("bd ~ ~ bd").gain(0.6)
+$bass: note("c2 ~ c2 [c1 c2] ~").s("sawtooth").lpf(400).gain(slider(0.3,0,1,0.01)).distort(0.4).crush(6)
+$trees: s("wind*4").gain(slider(0.25,0,1,0.01)).pan(sine.range(0,1).slow(4))
+$rustle: s("insect/8").gain(slider(0.1,0,1,0.01)).lpf(1200).room(0.4)
+$room: s("wind ~ wind ~, crow/4").gain(slider(0.3,0,1,0.01)).room(0.7)
+$machines: s("metal/8").gain(slider(0.15,0,1,0.01))
+$voices: s("jazz/16").gain(slider(0.1,0,1,0.01)).room(0.5)
