@@ -30,7 +30,6 @@ const albums = [
       { id: "d1", title: "Facility", file: "/audio/Synthony - Facility - 16c.ogg" },
       { id: "d2", title: "Crow Economics", file: "/audio/Synthony - Crow Economy - 16c.ogg" },
             { id: "d3", title: "Sandy Hands", file: "/audio/Synthony - Sandy Hands - 16c.ogg" },
-      { id: "d4", title: "Coagula", file: "/audio/Synthony - Coagula - 16c.ogg" },
       { id: "d5", title: "Aurora Alone", file: "/audio/Synthony - Aurora Alone - 16c.ogg" },
     ],
   },

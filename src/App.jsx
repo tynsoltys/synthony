@@ -12,7 +12,7 @@ const albumColors = {
     bgHover: "hover:bg-neon-cyan/5",
     border: "border-neon-cyan",
     glow: "var(--color-neon-cyan-glow)",
-    hex: "var(--color-neon-cyan)",
+    hex: "#00ffff",
   },
   "album-2": {
     text: "text-neon-pink",
@@ -22,7 +22,7 @@ const albumColors = {
     bgHover: "hover:bg-neon-pink/5",
     border: "border-neon-pink",
     glow: "var(--color-neon-pink-glow)",
-    hex: "var(--color-neon-pink)",
+    hex: "#ff36ab",
   },
   "album-3": {
     text: "text-neon-orange",
@@ -32,7 +32,7 @@ const albumColors = {
     bgHover: "hover:bg-neon-orange/5",
     border: "border-neon-orange",
     glow: "var(--color-neon-orange-glow)",
-    hex: "var(--color-neon-orange)",
+    hex: "#ff8c00",
   },
 };
 
@@ -199,6 +199,22 @@ export default function App() {
     };
   }, []);
 
+  // Media Session API — lock screen controls + background playback
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !trackObj) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: trackObj.title,
+      artist: "Synthony",
+      album: currentAlbum?.name || "",
+    });
+
+    navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true));
+    navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
+    navigator.mediaSession.setActionHandler("previoustrack", prevTrack);
+    navigator.mediaSession.setActionHandler("nexttrack", nextTrack);
+  }, [currentTrack, trackObj, currentAlbum, prevTrack, nextTrack]);
+
   useEffect(() => {
     const handler = (e) => {
       if (e.code === "Space") {
@@ -232,13 +248,22 @@ export default function App() {
 
       {/* Pager device */}
       <div
-        className={`relative z-10 w-[520px] border-2 rounded-sm bg-pager-bg p-2 transition-transform ${
+        className={`pager-device relative z-10 w-full min-h-screen md:min-h-0 md:w-[520px] md:rounded-sm bg-pager-bg p-2 transition-transform ${
           glitch ? "translate-x-[3px] skew-x-1" : ""
-        } ${playingColors.border}`}
+        }`}
         style={{
           boxShadow: `0 0 40px ${playingColors.glow}, inset 0 0 40px rgba(0, 0, 0, 0.8), 0 0 80px ${playingColors.glow}`,
         }}
       >
+        {/* Mobile: neon accent lines instead of border */}
+        <style>{`
+          @media (max-width: 767px) {
+            .pager-device { border: none !important; border-radius: 0 !important; }
+          }
+          @media (min-width: 768px) {
+            .pager-device { border: 2px solid ${playingColors.hex} !important; }
+          }
+        `}</style>
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b border-neon-purple-dim">
           <span className="text-xs text-neon-purple tracking-[0.3em] uppercase"
@@ -336,7 +361,7 @@ export default function App() {
           </div>
 
           {/* Track list */}
-          <div className="h-[280px] overflow-y-auto">
+          <div className="h-[280px] md:h-[280px] overflow-y-auto">
             {visibleAlbum?.tracks.map((track, i) => {
               const isActive = currentTrack === track.id;
               return (
@@ -365,6 +390,15 @@ export default function App() {
             })}
           </div>
         </div>
+
+        {/* Neon divider (mobile: replaces the outer border glow) */}
+        <div
+          className="md:hidden h-[1px] mx-2 my-1"
+          style={{
+            background: `linear-gradient(to right, transparent, ${playingColors.hex}, transparent)`,
+            boxShadow: `0 0 6px ${playingColors.glow}`,
+          }}
+        />
 
         {/* Transport controls */}
         <div className="flex items-center justify-center gap-6 px-4 py-3">
